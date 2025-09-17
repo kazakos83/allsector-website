@@ -1,0 +1,10 @@
+# Force HTTPS redirects
+http://allsector.com.au/* https://allsector.com.au/:splat 301!
+http://www.allsector.com.au/* https://allsector.com.au/:splat 301!
+https://www.allsector.com.au/* https://allsector.com.au/:splat 301!
+
+# API routes for Supabase Edge Functions
+/api/* https://your-project.supabase.co/functions/v1/:splat 200
+
+# Handle React Router (SPA)
+/*    /index.html   200

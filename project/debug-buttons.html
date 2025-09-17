@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Debug Tool - Allsector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-button {
+            background: #dc2626;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+        .test-button:active {
+            transform: translateY(0);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .warning { background: #fef3c7; color: #92400e; }
+        .log {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Get Quote Button Debug Tool</h1>
+    
+    <div class="debug-panel">
+        <h2>Button Functionality Tests</h2>
+        
+        <button class="test-button" onclick="testBasicClick()">
+            Test Basic Click Handler
+        </button>
+        
+        <button class="test-button" onclick="testScrollToContact()">
+            Test Scroll to Contact
+        </button>
+        
+        <button class="test-button" onclick="testFormValidation()">
+            Test Form Validation
+        </button>
+        
+        <button class="test-button" onclick="testNetworkConnectivity()">
+            Test Network Connectivity
+        </button>
+        
+        <button class="test-button" onclick="runAllTests()">
+            🚀 Run All Tests
+        </button>
+        
+        <button class="test-button" onclick="clearLog()">
+            Clear Log
+        </button>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Test Results</h2>
+        <div id="status-container"></div>
+        <div id="log-container" class="log"></div>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Browser Information</h2>
+        <div id="browser-info"></div>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Page Analysis</h2>
+        <div id="page-analysis"></div>
+    </div>
+
+    <script>
+        let testLog = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            testLog.push(logEntry);
+            updateLogDisplay();
+            console.log(logEntry);
+        }
+        
+        function updateLogDisplay() {
+            document.getElementById('log-container').textContent = testLog.join('\n');
+        }
+        
+        function showStatus(message, type) {
+            const statusContainer = document.getElementById('status-container');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusContainer.appendChild(statusDiv);
+        }
+        
+        function clearLog() {
+            testLog = [];
+            document.getElementById('log-container').textContent = '';
+            document.getElementById('status-container').innerHTML = '';
+        }
+        
+        function testBasicClick() {
+            log('Testing basic click functionality...');
+            
+            try {
+                // Test if click events are working
+                const testElement = document.createElement('button');
+                testElement.onclick = () => {
+                    log('✅ Click event handler working correctly');
+                    showStatus('Basic click functionality: WORKING', 'success');
+                };
+                testElement.click();
+            } catch (error) {
+                log(`❌ Click test failed: ${error.message}`, 'error');
+                showStatus('Basic click functionality: FAILED', 'error');
+            }
+        }
+        
+        function testScrollToContact() {
+            log('Testing scroll to contact functionality...');
+            
+            try {
+                // Check if contact section exists
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    log('✅ Contact section found');
+                    
+                    // Test smooth scrolling
+                    if ('scrollBehavior' in document.documentElement.style) {
+                        log('✅ Smooth scrolling supported');
+                        showStatus('Scroll functionality: SUPPORTED', 'success');
+                    } else {
+                        log('⚠️ Smooth scrolling not supported, using fallback');
+                        showStatus('Scroll functionality: FALLBACK MODE', 'warning');
+                    }
+                } else {
+                    log('❌ Contact section not found on this page');
+                    showStatus('Contact section: NOT FOUND', 'error');
+                }
+            } catch (error) {
+                log(`❌ Scroll test failed: ${error.message}`, 'error');
+                showStatus('Scroll functionality: FAILED', 'error');
+            }
+        }
+        
+        function testFormValidation() {
+            log('Testing form validation...');
+            
+            try {
+                // Check if contact form exists
+                const forms = document.querySelectorAll('form');
+                if (forms.length > 0) {
+                    log(`✅ Found ${forms.length} form(s) on page`);
+                    
+                    forms.forEach((form, index) => {
+                        const requiredFields = form.querySelectorAll('[required]');
+                        log(`Form ${index + 1}: ${requiredFields.length} required fields`);
+                    });
+                    
+                    showStatus('Form validation: FORMS DETECTED', 'success');
+                } else {
+                    log('⚠️ No forms found on current page');
+                    showStatus('Form validation: NO FORMS FOUND', 'warning');
+                }
+            } catch (error) {
+                log(`❌ Form validation test failed: ${error.message}`, 'error');
+                showStatus('Form validation: FAILED', 'error');
+            }
+        }
+        
+        async function testNetworkConnectivity() {
+            log('Testing network connectivity...');
+            
+            try {
+                // Test basic connectivity
+                const response = await fetch(window.location.origin, { 
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                });
+                
+                if (response.ok) {
+                    log('✅ Network connectivity working');
+                    showStatus('Network connectivity: WORKING', 'success');
+                } else {
+                    log(`⚠️ Network response: ${response.status} ${response.statusText}`);
+                    showStatus('Network connectivity: ISSUES DETECTED', 'warning');
+                }
+            } catch (error) {
+                log(`❌ Network test failed: ${error.message}`, 'error');
+                showStatus('Network connectivity: FAILED', 'error');
+            }
+        }
+        
+        async function runAllTests() {
+            log('🚀 Running comprehensive button diagnostics...');
+            clearLog();
+            
+            testBasicClick();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testScrollToContact();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testFormValidation();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testNetworkConnectivity();
+            
+            log('✅ All tests completed');
+            showStatus('Diagnostic complete - check results above', 'success');
+        }
+        
+        // Initialize page analysis
+        function analyzePage() {
+            const analysis = [];
+            
+            // Check for quote buttons
+            const quoteButtons = document.querySelectorAll('a[href="#contact"], a[href="/contact"]');
+            analysis.push(`Quote buttons found: ${quoteButtons.length}`);
+            
+            // Check for JavaScript errors
+            const hasErrors = window.onerror !== null;
+            analysis.push(`JavaScript errors detected: ${hasErrors ? 'Yes' : 'No'}`);
+            
+            // Check viewport
+            const viewport = document.querySelector('meta[name="viewport"]');
+            analysis.push(`Viewport meta tag: ${viewport ? 'Present' : 'Missing'}`);
+            
+            // Check for CSS
+            const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
+            analysis.push(`Stylesheets loaded: ${stylesheets.length}`);
+            
+            document.getElementById('page-analysis').innerHTML = analysis.map(item => `<p>• ${item}</p>`).join('');
+        }
+        
+        // Initialize browser info
+        function displayBrowserInfo() {
+            const info = [
+                `User Agent: ${navigator.userAgent}`,
+                `Platform: ${navigator.platform}`,
+                `Language: ${navigator.language}`,
+                `Cookies Enabled: ${navigator.cookieEnabled}`,
+                `Online: ${navigator.onLine}`,
+                `Screen Resolution: ${screen.width}x${screen.height}`,
+                `Viewport Size: ${window.innerWidth}x${window.innerHeight}`
+            ];
+            
+            document.getElementById('browser-info').innerHTML = info.map(item => `<p>• ${item}</p>`).join('');
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            displayBrowserInfo();
+            analyzePage();
+            log('Debug tool initialized');
+        });
+        
+        // Catch JavaScript errors
+        window.onerror = function(message, source, lineno, colno, error) {
+            log(`JavaScript Error: ${message} at ${source}:${lineno}:${colno}`, 'error');
+            return false;
+        };
+        
+        // Catch unhandled promise rejections
+        window.addEventListener('unhandledrejection', function(event) {
+            log(`Unhandled Promise Rejection: ${event.reason}`, 'error');
+        });
+    </script>
+</body>
+</html>
